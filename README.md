@@ -96,12 +96,17 @@ Finally, "yank" out interesting nodes based on their flavors and scores. For exa
 
 Our docs are a little sparse so far, but [our tests](https://github.com/mozilla/fathom/tree/master/test) might help you in the meantime.
 
-## Test coverage
+## Tests
+
+To run the tests, run...
+
 ```
-  npm test
+npm test
 ```
 
-You can find the coverage report under coverage/ directory and the html version under coverage/lcov-report/index.html.
+This will also run the linter and analyze test coverage. You can find the coverage report in the `coverage` directory and the HTML version under `coverage/lcov-report/index.html`.
+
+If you're in the midst of a tornado of rapid development and the fancy stuff is too slow, you can invoke `make test` to run "just the tests, ma'am".
 
 ## Version History
 
