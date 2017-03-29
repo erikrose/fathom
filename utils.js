@@ -371,11 +371,16 @@ function domSort(elements) {
 }
 
 /**
- * Parse an HTML doc, and return a DOM-compliant interface to it. Do not
- * execute any of its inline scripts.
+ * Parse an HTML doc, and pass a DOM-compliant interface to it to a function.
+ * Do not execute any of its inline scripts.
+ *
+ * After the function completes, free the DOM's memory. Contining to use the
+ * DOM after that is probably a bad idea.
  */
-function staticDom(html) {
-    return jsdom(html, {features: {ProcessExternalResources: false}});
+function withDom(html, func) {
+    const doc = jsdom(html, {features: {ProcessExternalResources: false}, done: function (err, window) { setImmediate(() => (window.close() || global.gc())) }});
+    func(doc);
+    //doc.defaultView.close();  // Don't leak RAM.
 }
 
 module.exports = {
@@ -400,8 +405,8 @@ module.exports = {
     reversed,
     rootElement,
     setDefault,
-    staticDom,
     sum,
     toposort,
-    walk
+    walk,
+    withDom
 };

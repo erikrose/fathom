@@ -21,7 +21,7 @@ const leven = require('leven');
 
 const {clusters, distance} = require('../clusters');
 const {dom, props, rule, ruleset, score, type} = require('../index');
-const {domSort, inlineTextLength, linkDensity, max, staticDom,  sum} = require('../utils');
+const {domSort, inlineTextLength, linkDensity, max,  sum, withDom} = require('../utils');
 
 
 /**
@@ -169,7 +169,13 @@ class DiffStats {
      * readability test folder.
      */
     compareFilesIn(folder) {
-        this.compare(...expectedAndSourceDocs(folder));
+        const self = this;
+        let [expected, source] = expectedAndSourceHtml(folder);
+        withDom(expected, function (expectedDoc) {
+            withDom(source, function (sourceDoc) {
+                self.compare(expectedDoc, sourceDoc);
+            });
+        });
     }
 
     score() {
@@ -177,16 +183,16 @@ class DiffStats {
     }
 }
 
-function expectedAndSourceDocs(folder) {
-    const domFromFile = fileName => staticDom(readFileSync(join(dirname(__dirname), 'test', 'readability', folder, fileName)));
-    return [domFromFile('expected.html'),
-            domFromFile('source.html')];
+function expectedAndSourceHtml(folder) {
+    const htmlFromFile = fileName => readFileSync(join(dirname(__dirname), 'test', 'readability', folder, fileName));
+    return [htmlFromFile('expected.html'),
+            htmlFromFile('source.html')];
 }
 
-function deviationScore(docPairs, coeffs=[]) {
+function deviationScore(coeffs=[]) {
     const stats = new DiffStats(tunedContentNodes(...coeffs));
-    for (let pair of docPairs) {
-        stats.compare(...pair);
+    for (let folder of ['basic-tags-cleaning', '001', 'daringfireball-1']) {
+        stats.compareFilesIn(folder);
     }
     return stats.score();
 }
@@ -205,8 +211,7 @@ if (require.main === module) {
     class ContentNodesTuner extends Annealer {
         constructor() {
             super();
-            const docPairs = readabilityDocPairs();
-            this.solutionCost = coeffs => deviationScore(docPairs, coeffs);
+            this.solutionCost = deviationScore;
         }
 
         randomTransition(solution) {
