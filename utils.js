@@ -1,4 +1,4 @@
-const {jsdom} = require('jsdom');
+const jsdom = require('jsdom');
 const {forEach, map} = require('wu');
 
 const {CycleError} = require('./exceptions');
@@ -378,7 +378,12 @@ function domSort(elements) {
  * DOM after that is probably a bad idea.
  */
 function withDom(html, func) {
-    const doc = jsdom(html, {features: {ProcessExternalResources: false}, done: function (err, window) { setImmediate(() => (window.close() || global.gc())) }});
+    //function closeWindow(err, window) { window.close(); }
+    function runAndClose(err, window) {
+        func(window.document);
+        window.close()
+    }
+    const doc = jsdom.env({html, done: () => null, features: {ProcessExternalResources: false}});
     func(doc);
     //doc.defaultView.close();  // Don't leak RAM.
 }
