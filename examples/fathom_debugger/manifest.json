@@ -1,0 +1,11 @@
+{
+  "description": "Runs your Fathom ruleset against the current tab and shows you the result",
+  "manifest_version": 2,
+  "name": "Fathom Debugger",
+  "version": "0.1",
+  "homepage_url": "https://github.com/mozilla/fathom/tree/master/examples/fathom_debugger",
+  "icons": {
+    "48": "icon.png"
+  },
+  "devtools_page": "devtools.html"
+}
