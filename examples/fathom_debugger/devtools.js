@@ -1,9 +1,15 @@
 browser.devtools.panels.create(
-  "Fathom",                      // title
-  "icon.png",                // icon
-  "devtools.html"      // content
-);
-// .then((newPanel) => {
-//   newPanel.onShown.addListener(initialisePanel);
-//   newPanel.onHidden.addListener(unInitialisePanel);
-// });
+  "Fathom",
+  "icon.png",
+  "devtools-panel.html"
+).then((newPanel) => {
+  newPanel.onShown.addListener(showPanel);
+  newPanel.onHidden.addListener(hidePanel);
+});
+
+function showPanel() {
+    console.log("panel is being shown");
+}
+function hidePanel() {
+    console.log("panel is being hidden");
+}
