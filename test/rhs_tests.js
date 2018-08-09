@@ -5,14 +5,16 @@ const {staticDom} = require('../utils');
 
 
 describe('RHS', function () {
+    const dummyBoundRuleset = {fnodeForElement: () => undefined}
+
     it('combines different calls piecewise, with rightmost repeated subfacts shadowing', function () {
         const rhs = type('foo').score(5).props(node => ({score: 6})).asRhs();
-        assert.deepEqual(rhs.fact('dummy'), {type: 'foo', score: 6});
+        assert.deepEqual(rhs.fact('dummy', undefined, dummyBoundRuleset), {type: 'foo', score: 6});
     });
 
     it('has same-named calls shadow, with rightmost winning', function () {
         const rhs = props(node => ({score: 1})).props(node => ({note: 'foo'})).asRhs();
-        assert.deepEqual(rhs.fact('dummy'), {note: 'foo'});
+        assert.deepEqual(rhs.fact('dummy', undefined, dummyBoundRuleset), {note: 'foo'});
     });
 
     it('runs callbacks only once', function () {
@@ -22,13 +24,13 @@ describe('RHS', function () {
             return {};
         }
         const rhs = props(addOne).asRhs();
-        assert.deepEqual(rhs.fact('dummy'), {});
+        assert.deepEqual(rhs.fact('dummy', undefined, dummyBoundRuleset), {});
         assert.equal(count, 1);
     });
 
     it('ignores unexpected subfacts returned from props() callbacks', function () {
         const rhs = props(node => ({conserveScore: true, score: 3})).asRhs();
-        assert.deepEqual(rhs.fact('dummy'), {score: 3});
+        assert.deepEqual(rhs.fact('dummy', undefined, dummyBoundRuleset), {score: 3});
     });
 
     it('enforces atMost()', function () {

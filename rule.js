@@ -152,7 +152,7 @@ class InwardRule extends Rule {
         forEach(
             function updateFnode(leftFnode) {
                 const leftType = self.lhs.guaranteedType();
-                const fact = self.rhs.fact(leftFnode, leftType);
+                const fact = self.rhs.fact(leftFnode, leftType, ruleset);
                 self.lhs.checkFact(fact);
                 const rightFnode = ruleset.fnodeForElement(fact.element || leftFnode.element);
                 // If the RHS doesn't specify a type, default to the

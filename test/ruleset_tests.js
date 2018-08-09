@@ -1,7 +1,7 @@
 const {assert} = require('chai');
 
 const {and, conserveScore, dom, out, props, rule, ruleset, score, type} = require('../index');
-const {staticDom} = require('../utils');
+const {rootElement, staticDom} = require('../utils');
 
 
 describe('Ruleset', function () {
@@ -291,6 +291,25 @@ describe('Ruleset', function () {
         const subtreeBest = subtreeFacts.get('best');
         assert.equal(subtreeBest.length, 1);
         assert.equal(subtreeBest[0].element.id, 'inner');
+    });
+
+    it('lets callbacks look up fnodes of elements', function () {
+        const doc = staticDom(`
+            <div id=one></div>
+            <div id=two></div>
+        `);
+        const rules = ruleset(
+            rule(dom('#one'), type('ONE')),
+            rule(dom('#two'), type('TWO')),
+            rule(type('ONE'), props(
+                (fnodeOne, helpers) =>
+                    ({type: 'oneAndTwo',
+                      note: {fnodeTwo: helpers.fnodeForElement(rootElement(fnodeOne.element).querySelector('#two'))}})).typeIn('oneAndTwo')),
+            rule(type('oneAndTwo'), out('oneAndTwo'))
+        );
+        const facts = rules.against(doc);
+        const oneAndTwo = facts.get('oneAndTwo');
+        assert.equal(oneAndTwo[0].noteFor('oneAndTwo').fnodeTwo.element.id, 'two');
     });
 });
 

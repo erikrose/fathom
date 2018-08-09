@@ -71,8 +71,8 @@ class InwardRhs {
       *   other than the input one.
       */
     props(callback) {
-        function getSubfacts(fnode) {
-            const subfacts = callback(fnode);
+        function getSubfacts(fnode, helpers) {
+            const subfacts = callback(fnode, helpers);
             // Filter the raw result down to okayed properties so callbacks
             // can't insert arbitrary keys (like conserveScore, which might
             // mess up the optimizer).
@@ -238,7 +238,7 @@ class InwardRhs {
      *
      * @arg leftType The type the LHS takes in
      */
-    fact(fnode, leftType) {
+    fact(fnode, leftType, boundRuleset) {
         const doneKinds = new Set();
         const result = {};
         let haveSubfacts = 0;
@@ -249,7 +249,7 @@ class InwardRhs {
 
                 if (~haveSubfacts & call.possibleSubfacts) {
                     // This call might provide a subfact we are missing.
-                    const newSubfacts = call(fnode);
+                    const newSubfacts = call(fnode, {fnodeForElement: boundRuleset.fnodeForElement.bind(boundRuleset)});
                     for (let subfact in newSubfacts) {
                         // A props() callback could insert arbitrary keys into
                         // the result, but it shouldn't matter, because nothing
