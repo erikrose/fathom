@@ -2,6 +2,10 @@
  * Boilerplate factored out of fathom-trainees so, as much as possible, the
  * only thing left in that web extension is the ruleset developer's code
  */
+import {setDefault} from './utilsForFrontend';
+
+let boundRulesets = new Map();  // Hang onto a BoundRuleset for each page so we can cache rule outputs.
+let someVar = 333;
 
 /** Handle messages that come in from the FathomFox webext. */
 function handleBackgroundScriptMessage(request, sender, sendResponse) {
@@ -58,12 +62,16 @@ function foundLabelIsTraineeId(facts, traineeId, moreReturns) {
  * A mindless factoring-out over the rulesetSucceeded and labelBadElement
  * content-script messages
  */
-function rulesetDidSucceed(traineeId, coeffs, moreReturns) {
+function rulesetDidSucceed(traineeId, serializedCoeffs, moreReturns) {
     // Run the trainee ruleset of the given ID with the given coeffs
     // over the document, and report whether it found the right
     // element.
+    console.log(someVar);
+    someVar = 444;
     const trainee = trainees.get(traineeId);
-    const rules = trainee.rulesetMaker(coeffs);
+    console.log(Array.from(boundRulesets.keys()), traineeId);
+    const rules = setDefault(boundRulesets, traineeId, () => trainee.rulesetMaker('dummy'));
+    rules.coeffs = new Map(serializedCoeffs);
     const facts = rules.against(window.document);
     const successFunc = trainee.successFunction || foundLabelIsTraineeId;
     const didSucceed = successFunc(facts, traineeId, moreReturns);
