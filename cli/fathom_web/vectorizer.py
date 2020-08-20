@@ -412,6 +412,7 @@ def running_firefox(fathom_fox, show_browser, geckodriver_path):
 
         firefox = webdriver.Firefox(
             executable_path=str(geckodriver_path.resolve()),
+            firefox_binary='/Applications/FirefoxNightly.app/Contents/MacOS/firefox',
             options=options,
             firefox_profile=profile,
             service_log_path=devnull,
