@@ -56,14 +56,14 @@ function connectADevPanel(port) {
 browser.runtime.onConnect.addListener(connectADevPanel);
 
 // Update devtools panel when tab navigates to new page.
-// browser.tabs.onUpdated.addListener((tabId, changeInfo, tabInfo) => {
-//     if (changeInfo.status === 'complete') {
-//         browser.runtime.sendMessage({type: 'init'})
-//             .catch((error) => {
-//                 console.error(error)
-//             });
-//     }
-// });
+browser.tabs.onUpdated.addListener((tabId, changeInfo, tabInfo) => {
+    if (changeInfo.status === 'complete') {
+        browser.runtime.sendMessage({type: 'init'})
+            .catch((error) => {
+                console.error(error)
+            });
+    }
+});
 
 async function freeze_tab(tab) {
     const html = await browser.tabs.sendMessage(
