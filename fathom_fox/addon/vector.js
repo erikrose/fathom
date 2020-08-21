@@ -177,6 +177,5 @@ class Vectorizer extends PageVisitor {
 }
 
 const vectorizer = new Vectorizer(document);
-vectorizer.addEventListeners();
 
 initTraineeMenu(document.getElementById('freeze'));

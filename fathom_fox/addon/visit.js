@@ -14,6 +14,7 @@ class PageVisitor {
         this.tabUpdateListener = undefined;
         this.otherOptions = undefined;
         this.doc = document;
+        this.addEventListeners();
     }
 
     addEventListeners() {
