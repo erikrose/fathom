@@ -56,6 +56,7 @@ class PageVisitor {
         let windowId = 'uninitialized window ID';
         this.urlIndex = -1;
         this.tabsDone = 0;
+        const tabsAlreadyVisited = new Set();
 
         // Listen for tab events before we start creating tabs; this avoids race
         // conditions between creating tabs and waiting for loading to complete.
@@ -67,6 +68,11 @@ class PageVisitor {
                 changeInfo.status !== 'complete'  // Avoid the several other update events about things like "attention" that fire on every page.
             ) {
                 return;
+            }
+            if (tabsAlreadyVisited.has(tab.id)) {
+                return;
+            } else {
+                tabsAlreadyVisited.add(tab.id);
             }
 
             if (tab.url.startsWith('moz-extension://')) {
