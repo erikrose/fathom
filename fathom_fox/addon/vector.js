@@ -5,6 +5,7 @@ class Vectorizer extends PageVisitor {
         this.trainee = undefined;
         this.traineeId = undefined;
         this.vectors = [];
+        this.processedTabIds = new Set();
     }
 
     formOptions() {
@@ -71,6 +72,12 @@ class Vectorizer extends PageVisitor {
     }
 
     async processWithinTimeout(tab, windowId) {
+        // Sometimes, this seems to get called twice on a tab. IHNI why.
+        if (this.processedTabIds.has(tab.id)) {
+            return
+        } else {
+            this.processedTabIds.add(tab.id);
+        }
         this.setCurrentStatus({message: 'vectorizing', index: tab.id});
         // Have the content script vectorize the page:
         let vector = undefined;
