@@ -14,10 +14,10 @@ class PageVisitor {
         this.tabUpdateListener = undefined;
         this.otherOptions = undefined;
         this.doc = document;
-        this.addEventListeners();
+        this._addEventListeners();
     }
 
-    addEventListeners() {
+    _addEventListeners() {
         this.doc.addEventListener('fathom:start', this.start.bind(this), false);
         this.doc.addEventListener('fathom:next', this.next.bind(this), false);
         this.doc.addEventListener('fathom:visitPage', this.visitPage.bind(this), false);
